@@ -53,14 +53,30 @@ void Test1(void){
 //}
 
 // 返回值后把p 的地址放到str里了, 虽然p被释放了, 但str依旧指向对应的堆空间
-char* GetMemory(){// 这里的 p 要进行形参实例化 
-	char* p = (char*)malloc(100);
-	return p;// 最终要把p返回
+// 因为返回值p 的值本身不是从栈上拿的 是从CPU里的寄存器拿的 
+// return p的时候 p的值被放到了寄存器里, 
+// char* str = xxx 就是把p 的这个值再拿回来 
+// 寄存器不属于函数里  当你准备接收时, 再把寄存器里的值给你(EAX通用寄存器, 
+//char* GetMemory(){// 这里的 p 要进行形参实例化 
+//	char* p = (char*)malloc(100);
+//	return p;// 最终要把p返回
+//}
+//void Test(void){
+//	char* str = GetMemory(&str);
+//	strcpy(str, "hello world");// 
+//	printf(str);
+//}
+
+// 申请完未判断
+// 未释放
+void GetMemory(char** p, int num){
+	*p = (char*)malloc(num);
 }
 void Test(void){
-	char* str = GetMemory(&str);
-	strcpy(str, "hello world");
-	printf(str);
+	char* str = NULL;
+	GetMemory(&str, 100);
+	strcpy(str, "hello");
+	printf(str);// 结果hello
 }
 int main(){
 	Test();
